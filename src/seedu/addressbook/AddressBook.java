@@ -90,6 +90,8 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String MESSAGE_LIST_SORTED = "List successfully sorted alphabetically!";
+    private static final String MESSAGE_LIST_SORT_FAIL = "Got nothing to sort!" + LS;
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -134,7 +136,7 @@ public class AddressBook {
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
     private static final String COMMAND_SORT_WORD = "sort";
-    private static final String COMMAND_SORT_DESC = "Sort the list in alphabetical order.";
+    private static final String COMMAND_SORT_DESC = "Sort and display the list in alphabetical order.";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
@@ -586,20 +588,16 @@ public class AddressBook {
     }
 
     /**
-     * Sort the list in alphabetical order
+     *  Sort and list all the person in the address book in alphabetical order.
      */
     private static String executeSortList() {
         ArrayList<String[]> toBeSorted = getAllPersonsInAddressBook();
-        ArrayList<String> sorted = sortDisplayList(toBeSorted);
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < sorted.size(); i++) {
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                    .append(getIndexedSortedPersonListElementMessage(displayIndex, sorted.get(i)))
-                    .append(LS);
+        if (!toBeSorted.isEmpty()) {
+            String listToBeDisplay = getDisplaySortedString(toBeSorted);
+            showToUser(listToBeDisplay);
+            return MESSAGE_LIST_SORTED;
         }
-        showToUser(messageAccumulator.toString());
-        return getMessageForPersonsDisplayedSummary(toBeSorted);
+        return MESSAGE_LIST_SORT_FAIL;
     }
 
     /**
@@ -668,6 +666,21 @@ public class AddressBook {
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                     .append(getIndexedPersonListElementMessage(displayIndex, person))
+                    .append(LS);
+        }
+        return messageAccumulator.toString();
+    }
+
+    /**
+     * Returns the display string representation of the sorted list of persons.
+     */
+    private static String getDisplaySortedString(ArrayList<String[]> toBeSorted) {
+        ArrayList<String> sorted = sortDisplayList(toBeSorted);
+        final StringBuilder messageAccumulator = new StringBuilder();
+        for (int i = 0; i < sorted.size(); i++) {
+            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+            messageAccumulator.append('\t')
+                    .append(getIndexedSortedPersonListElementMessage(displayIndex, sorted.get(i)))
                     .append(LS);
         }
         return messageAccumulator.toString();
@@ -854,13 +867,21 @@ public class AddressBook {
     }
 
     /**
-     *  Sort the list in alphabetic order
+     * Sort the list of person in alphabetic order
+     *
+     * @param persons existing actual person inside the address book
+     * @return sorted list of person
      */
     private static ArrayList<String> sortDisplayList(ArrayList<String[]> persons) {
-        ArrayList<String> encoded = encodePersonsToStrings(persons);
+        ArrayList<String> encoded = new ArrayList<>();
+        for (int i = 0; i < persons.size(); i++) {
+            final String[] person = persons.get(i);
+            encoded.add(getMessageForFormattedPersonData(person));
+        }
         Collections.sort(encoded);
         return encoded;
     }
+
     /*
      * ===========================================
      *             PERSON METHODS
@@ -1118,6 +1139,7 @@ public class AddressBook {
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
+                + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
@@ -1155,6 +1177,12 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
     }
 
+    /** Returns the string for showing 'sort' command usage instruction */
+    private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+    }
+
     /** Returns string for showing 'help' command usage instruction */
     private static String getUsageInfoForHelpCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
@@ -1166,7 +1194,6 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
-
 
     /*
      * ============================
