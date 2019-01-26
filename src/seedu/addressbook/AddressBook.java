@@ -92,6 +92,8 @@ public class AddressBook {
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
     private static final String MESSAGE_LIST_SORTED = "List successfully sorted alphabetically!";
     private static final String MESSAGE_LIST_SORT_FAIL = "Got nothing to sort!" + LS;
+    private static final String MESSAGE_FUNCTIONS_ONE = "Functions available:";
+    private static final String MESSAGE_FUNCTIONS_TWO = "1.add 2.find 3.list 4.delete 5.clear 6.sort 7.help 8.exit" + LS;
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -217,6 +219,7 @@ public class AddressBook {
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
+            showFunctionMessage();
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
@@ -234,6 +237,10 @@ public class AddressBook {
 
     private static void showWelcomeMessage() {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+    }
+
+    private static void showFunctionMessage() {
+        showToUser(MESSAGE_FUNCTIONS_ONE, MESSAGE_FUNCTIONS_TWO, DIVIDER);
     }
 
     private static void showResultToUser(String result) {
@@ -1141,7 +1148,7 @@ public class AddressBook {
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
+                + getUsageInfoForHelpCommand() + LS;
     }
 
     /** Returns the string for showing 'add' command usage instruction */

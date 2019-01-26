@@ -71,6 +71,7 @@
 || 
 || exit: Exits the program.	Example: exit
 || help: Shows program usage instructions.	Example: help
+||
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
