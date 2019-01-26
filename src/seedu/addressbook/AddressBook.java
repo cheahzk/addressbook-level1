@@ -874,7 +874,7 @@ public class AddressBook {
     }
 
     /**
-     * Sort the list of person in alphabetic order
+     * Sort the displaying list of person in alphabetic order but doesn't sort actual addressbook
      *
      * @param persons existing actual person inside the address book
      * @return sorted list of person
