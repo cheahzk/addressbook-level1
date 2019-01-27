@@ -100,6 +100,32 @@
   list
 
 ##########################################################
+# test sort command
+##########################################################
+
+  # should be nothing to sort in address book
+  sort
+
+  # add name to test
+  add Betsy Choo p/222222 e/benchoo@nus.edu.sg
+  list
+  add Adam Brown p/111111 e/adam@gmail.com
+  list
+  add Dickson Ee e/dickson@nus.edu.sg p/444444
+  list
+  add Aaron Lee e/aaron@nus.edu.sg p/333333
+  list
+
+  # should be showing list of person in alphabetical order
+  sort
+
+  # should be showing unsorted list
+  list
+
+  # clear before exiting sort test
+  clear
+
+##########################################################
 # test exit command
 ##########################################################
 
